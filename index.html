@@ -12,9 +12,9 @@
         }
 
         body {
-            font-family: 'Georgia', 'Times New Roman', serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #141e30 0%, #243b55 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -31,172 +31,235 @@
             width: 100%;
             height: 100%;
             background-image: 
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px);
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(252, 70, 107, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(103, 178, 111, 0.3) 0%, transparent 50%);
             pointer-events: none;
             z-index: 1;
+            animation: gradientMove 15s ease infinite;
         }
+
+        @keyframes gradientMove {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Notas musicales flotantes */
+        .musical-note {
+            position: fixed;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .musical-note:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .musical-note:nth-child(2) { left: 20%; animation-delay: 4s; }
+        .musical-note:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .musical-note:nth-child(4) { left: 40%; animation-delay: 6s; }
+        .musical-note:nth-child(5) { left: 50%; animation-delay: 1s; }
+        .musical-note:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .musical-note:nth-child(7) { left: 70%; animation-delay: 3s; }
+        .musical-note:nth-child(8) { left: 80%; animation-delay: 7s; }
+        .musical-note:nth-child(9) { left: 90%; animation-delay: 4s; }
 
         .container {
             text-align: center;
             width: 100%;
-            max-width: 900px;
-            background: #ffffff;
-            padding: 50px 40px;
-            border-radius: 4px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 60px 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
             position: relative;
             z-index: 2;
-            border-top: 4px solid #2c3e50;
+            backdrop-filter: blur(20px);
         }
 
         .header {
-            margin-bottom: 40px;
-            padding-bottom: 30px;
-            border-bottom: 2px solid #e8e8e8;
+            margin-bottom: 50px;
         }
 
         .titulo {
             color: #2c3e50;
-            font-family: 'Georgia', serif;
-            font-size: 3rem;
-            font-weight: normal;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
         }
 
         .subtitulo {
-            color: #5a6c7d;
-            font-family: 'Georgia', serif;
-            font-size: 1.4rem;
-            font-weight: normal;
-            font-style: italic;
+            color: #7f8c8d;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .search-section {
-            background: #f8f9fa;
-            padding: 35px 30px;
-            border-radius: 2px;
-            margin-bottom: 30px;
-            border: 1px solid #e0e0e0;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            margin-bottom: 0;
+            border: none;
         }
 
         .search-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 30px;
+            align-items: stretch;
+            gap: 0;
+            margin-bottom: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 50px;
+            overflow: hidden;
         }
 
         #numHimno {
             flex: 1;
-            max-width: 400px;
-            padding: 14px 20px;
+            padding: 18px 30px;
             font-size: 1.3rem;
             background: white;
-            border: 2px solid #d0d0d0;
-            border-radius: 2px;
+            border: none;
             text-align: center;
             color: #2c3e50;
             outline: none;
-            transition: all 0.2s;
-            font-family: 'Georgia', serif;
-        }
-
-        #numHimno:focus {
-            border-color: #2c3e50;
-            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 500;
         }
 
         #numHimno::placeholder {
-            color: #a0a0a0;
-            font-style: italic;
+            color: #bdc3c7;
+            font-weight: 400;
         }
 
         .btn-buscar {
-            width: 60px;
-            height: 52px;
-            background: #2c3e50;
+            width: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            border-radius: 2px;
             color: white;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .btn-buscar:hover {
-            background: #34495e;
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: scale(1.05);
         }
 
         .btn-buscar:active {
-            transform: scale(0.98);
+            transform: scale(0.95);
         }
 
         .tipo-container {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
         .btn-tipo {
             flex: 1;
-            min-width: 120px;
-            max-width: 150px;
-            padding: 14px 24px;
-            font-size: 1rem;
-            font-weight: normal;
-            background: white;
+            min-width: 100px;
+            padding: 15px 25px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background: #f8f9fa;
             color: #2c3e50;
-            border: 2px solid #d0d0d0;
-            border-radius: 2px;
+            border: 2px solid transparent;
+            border-radius: 15px;
             cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Georgia', serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Segoe UI', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-tipo::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(103, 126, 234, 0.1);
+            transition: width 0.6s, height 0.6s, top 0.6s, left 0.6s;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn-tipo:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-tipo:hover {
-            background: #f8f9fa;
-            border-color: #2c3e50;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(103, 126, 234, 0.2);
         }
 
         .btn-tipo.activo {
-            background: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-color: #2c3e50;
+            border-color: transparent;
+            box-shadow: 0 8px 25px rgba(103, 126, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-tipo.activo::before {
+            display: none;
         }
 
         .status {
-            color: #5a6c7d;
-            font-size: 1rem;
-            min-height: 40px;
-            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            min-height: 30px;
+            margin-top: 25px;
             padding: 12px 20px;
-            border-radius: 2px;
-            transition: all 0.2s;
-            font-family: 'Georgia', serif;
+            border-radius: 12px;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 500;
         }
 
         .status.success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #c8e6c9;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
         }
 
         .status.error {
-            background: #ffebee;
-            color: #c62828;
-            border: 1px solid #ffcdd2;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
         }
 
         .status.loading {
-            background: #e3f2fd;
-            color: #1565c0;
-            border: 1px solid #bbdefb;
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
         }
 
         /* Modal pantalla completa limpia */
@@ -231,11 +294,11 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .pdf-canvas.changing {
-            opacity: 0.3;
+            opacity: 0;
         }
 
         /* Controles minimalistas solo para PDF */
@@ -306,23 +369,25 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 30px 20px;
+                padding: 40px 30px;
+                max-width: 90%;
             }
 
             .titulo {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
 
             .subtitulo {
-                font-size: 1.2rem;
-            }
-
-            .search-container {
-                flex-direction: column;
+                font-size: 0.85rem;
             }
 
             #numHimno {
-                max-width: 100%;
+                font-size: 1.1rem;
+                padding: 15px 25px;
+            }
+
+            .btn-buscar {
+                width: 60px;
             }
 
             .tipo-container {
@@ -336,6 +401,17 @@
     </style>
 </head>
 <body>
+    <!-- Notas musicales flotantes -->
+    <div class="musical-note">♪</div>
+    <div class="musical-note">♫</div>
+    <div class="musical-note">♪</div>
+    <div class="musical-note">♫</div>
+    <div class="musical-note">♪</div>
+    <div class="musical-note">♫</div>
+    <div class="musical-note">♪</div>
+    <div class="musical-note">♫</div>
+    <div class="musical-note">♪</div>
+
     <div class="container">
         <div class="header">
             <h1 class="titulo">Himnario Adventista</h1>
