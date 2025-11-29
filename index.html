@@ -23,7 +23,6 @@
             overflow-x: hidden;
         }
 
-        /* Fondo sutil con patrón */
         body::before {
             content: '';
             position: fixed;
@@ -200,33 +199,150 @@
             border: 1px solid #bbdefb;
         }
 
-        .content-viewer {
-            margin-top: 30px;
+        /* Modal para visualización */
+        .modal {
             display: none;
-            background: #fafafa;
-            padding: 20px;
-            border-radius: 2px;
-            border: 1px solid #e0e0e0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            overflow: hidden;
         }
 
-        .audio-player audio {
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-family: 'Georgia', serif;
+        }
+
+        .btn-close {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 8px 20px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.2s;
+            font-family: 'Georgia', serif;
+        }
+
+        .btn-close:hover {
+            background: white;
+            color: #2c3e50;
+        }
+
+        /* Visor de PDF */
+        .pdf-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #2c3e50;
+            overflow: hidden;
+        }
+
+        .pdf-viewer-custom {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+            background: #1a1a2e;
+            padding: 20px;
+        }
+
+        .pdf-canvas {
+            max-width: 100%;
+            max-height: 100%;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .pdf-controls {
+            background: #34495e;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .pdf-btn {
+            background: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.2s;
+            font-family: 'Georgia', serif;
+            color: #2c3e50;
+        }
+
+        .pdf-btn:hover {
+            background: #e8e8e8;
+        }
+
+        .pdf-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pdf-info {
+            color: white;
+            font-size: 1rem;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Reproductor de audio */
+        .audio-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a2e;
+        }
+
+        .audio-player-custom {
+            text-align: center;
+            color: white;
+            padding: 40px;
+        }
+
+        .audio-player-custom h3 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-family: 'Georgia', serif;
+        }
+
+        .audio-player-custom audio {
             width: 100%;
             max-width: 600px;
-            outline: none;
-        }
-
-        .pdf-viewer {
-            width: 100%;
-            height: 600px;
-            border: 1px solid #d0d0d0;
-            border-radius: 2px;
-            background: white;
-        }
-
-        .label {
-            display: inline-block;
-            margin-right: 6px;
-            font-size: 0.9rem;
+            margin-top: 20px;
         }
 
         @media (max-width: 768px) {
@@ -258,27 +374,23 @@
                 max-width: 100%;
             }
 
-            .pdf-viewer {
-                height: 400px;
+            .modal-header {
+                padding: 15px 20px;
             }
-        }
 
-        /* Estilo minimalista para el scroll */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+            .modal-title {
+                font-size: 1.2rem;
+            }
 
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
+            .pdf-controls {
+                padding: 10px 15px;
+                gap: 10px;
+            }
 
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            .pdf-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -306,34 +418,68 @@
                 <button class="btn-tipo activo" data-tipo="L" data-ext="pdf" onclick="seleccionarTipo(this)">
                     Letra
                 </button>
-                <button class="btn-tipo" data-tipo="P" data-ext="mp3" onclick="seleccionarTipo(this)">
+                <button class="btn-tipo" data-tipo="P" data-ext="mp4" onclick="seleccionarTipo(this)">
                     Pista
                 </button>
-                <button class="btn-tipo" data-tipo="C" data-ext="mp3" onclick="seleccionarTipo(this)">
+                <button class="btn-tipo" data-tipo="C" data-ext="mp4" onclick="seleccionarTipo(this)">
                     Cantar
                 </button>
             </div>
         </div>
 
         <div class="status" id="status"></div>
+    </div>
 
-        <div class="content-viewer audio-player" id="audioPlayer">
-            <audio id="audioElement" controls></audio>
-        </div>
+    <!-- Modal para visualización -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Himno</div>
+                <button class="btn-close" onclick="cerrarModal()">Cerrar</button>
+            </div>
 
-        <div class="content-viewer" id="pdfViewer">
-            <iframe id="pdfFrame" class="pdf-viewer"></iframe>
+            <!-- Visor PDF personalizado -->
+            <div class="pdf-container" id="pdfContainer" style="display: none;">
+                <div class="pdf-viewer-custom">
+                    <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
+                </div>
+                <div class="pdf-controls">
+                    <button class="pdf-btn" id="btnPrev" onclick="paginaAnterior()">← Anterior</button>
+                    <span class="pdf-info">
+                        Página <span id="pageNum">1</span> de <span id="pageCount">1</span>
+                    </span>
+                    <button class="pdf-btn" id="btnNext" onclick="paginaSiguiente()">Siguiente →</button>
+                </div>
+            </div>
+
+            <!-- Reproductor de audio -->
+            <div class="audio-container" id="audioContainer" style="display: none;">
+                <div class="audio-player-custom">
+                    <h3 id="audioTitle">Reproduciendo himno</h3>
+                    <audio id="audioElement" controls autoplay></audio>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
     <script>
         let tipoSeleccionado = 'L';
         let extensionActual = 'pdf';
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.5;
         
-        // Ruta corregida para GitHub Pages
         const RUTA_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'himnos/'
             : '/Himnario-IASDMutualismo/himnos/';
+
+        // Configurar PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         document.getElementById('numHimno').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -349,27 +495,13 @@
             btn.classList.add('activo');
             tipoSeleccionado = btn.getAttribute('data-tipo');
             extensionActual = btn.getAttribute('data-ext');
-            
-            // Ocultar todos los visores
-            document.getElementById('audioPlayer').style.display = 'none';
-            document.getElementById('pdfViewer').style.display = 'none';
         }
 
         function buscarHimno() {
             const numeroHimno = document.getElementById('numHimno').value.trim();
             const statusDiv = document.getElementById('status');
-            const audioPlayer = document.getElementById('audioPlayer');
-            const pdfViewer = document.getElementById('pdfViewer');
-            const audioElement = document.getElementById('audioElement');
-            const pdfFrame = document.getElementById('pdfFrame');
 
-            // Limpiar estado previo
             statusDiv.className = 'status';
-            audioPlayer.style.display = 'none';
-            pdfViewer.style.display = 'none';
-            audioElement.pause();
-            audioElement.src = '';
-            pdfFrame.src = '';
 
             if (!numeroHimno) {
                 mostrarEstado('Por favor ingrese un número de himno', 'error');
@@ -380,11 +512,12 @@
             const rutaCompleta = RUTA_BASE + nombreArchivo;
 
             console.log('Buscando archivo en:', rutaCompleta);
+            mostrarEstado('Buscando archivo...', 'loading');
             
             if (extensionActual === 'pdf') {
-                cargarPDF(rutaCompleta, nombreArchivo);
+                verificarYAbrirPDF(rutaCompleta, nombreArchivo, numeroHimno);
             } else {
-                cargarAudio(rutaCompleta, nombreArchivo);
+                verificarYAbrirAudio(rutaCompleta, nombreArchivo, numeroHimno);
             }
         }
 
@@ -393,52 +526,151 @@
             return `himno_${numeroFormateado}_${tipo}.${extension}`;
         }
 
-        function cargarPDF(ruta, nombre) {
-            const pdfViewer = document.getElementById('pdfViewer');
-            const pdfFrame = document.getElementById('pdfFrame');
-            
-            mostrarEstado('Cargando documento...', 'loading');
-            
-            // Verificar si el PDF existe
+        function verificarYAbrirPDF(ruta, nombre, numero) {
             fetch(ruta, { method: 'HEAD' })
                 .then(response => {
                     if (response.ok) {
-                        pdfFrame.src = ruta;
-                        pdfViewer.style.display = 'block';
-                        mostrarEstado('Documento cargado correctamente: ' + nombre, 'success');
+                        mostrarEstado('Archivo encontrado. Abriendo...', 'success');
+                        abrirPDFEnModal(ruta, numero);
                     } else {
                         mostrarEstado('No se encontró el archivo: ' + nombre, 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    mostrarEstado('Error al cargar el documento: ' + nombre, 'error');
+                    mostrarEstado('Error al buscar el archivo', 'error');
                 });
         }
 
-        function cargarAudio(ruta, nombre) {
-            const audioElement = document.getElementById('audioElement');
-            const audioPlayer = document.getElementById('audioPlayer');
+        function verificarYAbrirAudio(ruta, nombre, numero) {
+            const audio = new Audio();
+            audio.src = ruta;
             
-            mostrarEstado('Cargando audio...', 'loading');
+            audio.addEventListener('canplay', function() {
+                mostrarEstado('Archivo encontrado. Reproduciendo...', 'success');
+                abrirAudioEnModal(ruta, numero);
+            }, { once: true });
+            
+            audio.addEventListener('error', function() {
+                mostrarEstado('No se encontró el archivo: ' + nombre, 'error');
+            }, { once: true });
+        }
+
+        function abrirPDFEnModal(ruta, numero) {
+            const modal = document.getElementById('modal');
+            const pdfContainer = document.getElementById('pdfContainer');
+            const audioContainer = document.getElementById('audioContainer');
+            const modalTitle = document.getElementById('modalTitle');
+
+            audioContainer.style.display = 'none';
+            pdfContainer.style.display = 'flex';
+            modalTitle.textContent = `Himno ${numero} - Letra`;
+            modal.classList.add('active');
+
+            cargarPDF(ruta);
+        }
+
+        function abrirAudioEnModal(ruta, numero) {
+            const modal = document.getElementById('modal');
+            const pdfContainer = document.getElementById('pdfContainer');
+            const audioContainer = document.getElementById('audioContainer');
+            const audioElement = document.getElementById('audioElement');
+            const audioTitle = document.getElementById('audioTitle');
+            const modalTitle = document.getElementById('modalTitle');
+
+            pdfContainer.style.display = 'none';
+            audioContainer.style.display = 'flex';
+            
+            const tipoTexto = tipoSeleccionado === 'P' ? 'Pista' : 'Cantar';
+            modalTitle.textContent = `Himno ${numero} - ${tipoTexto}`;
+            audioTitle.textContent = `Himno ${numero} - ${tipoTexto}`;
             
             audioElement.src = ruta;
             audioElement.load();
+            modal.classList.add('active');
+        }
+
+        function cerrarModal() {
+            const modal = document.getElementById('modal');
+            const audioElement = document.getElementById('audioElement');
             
-            audioElement.oncanplay = function() {
-                mostrarEstado('Audio cargado correctamente: ' + nombre, 'success');
-                audioPlayer.style.display = 'block';
-                audioElement.play().catch(err => {
-                    console.error('Error al reproducir:', err);
-                    mostrarEstado('Audio listo para reproducir', 'success');
+            audioElement.pause();
+            audioElement.src = '';
+            modal.classList.remove('active');
+            
+            if (pdfDoc) {
+                pdfDoc = null;
+                pageNum = 1;
+            }
+        }
+
+        // Funciones para manejar PDF
+        function cargarPDF(url) {
+            const loadingTask = pdfjsLib.getDocument(url);
+            loadingTask.promise.then(function(pdf) {
+                pdfDoc = pdf;
+                document.getElementById('pageCount').textContent = pdf.numPages;
+                renderizarPagina(pageNum);
+            });
+        }
+
+        function renderizarPagina(num) {
+            pageRendering = true;
+            
+            pdfDoc.getPage(num).then(function(page) {
+                const canvas = document.getElementById('pdfCanvas');
+                const ctx = canvas.getContext('2d');
+                const viewport = page.getViewport({scale: scale});
+
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+
+                const renderTask = page.render(renderContext);
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderizarPagina(pageNumPending);
+                        pageNumPending = null;
+                    }
                 });
-            };
-            
-            audioElement.onerror = function() {
-                console.error('Error al cargar:', ruta);
-                mostrarEstado('No se encontró el archivo: ' + nombre, 'error');
-                audioPlayer.style.display = 'none';
-            };
+            });
+
+            document.getElementById('pageNum').textContent = num;
+            actualizarBotones();
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderizarPagina(num);
+            }
+        }
+
+        function paginaAnterior() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+
+        function paginaSiguiente() {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+
+        function actualizarBotones() {
+            document.getElementById('btnPrev').disabled = (pageNum <= 1);
+            document.getElementById('btnNext').disabled = (pageNum >= pdfDoc.numPages);
         }
 
         function mostrarEstado(mensaje, tipo) {
@@ -446,6 +678,13 @@
             statusDiv.textContent = mensaje;
             statusDiv.className = `status ${tipo}`;
         }
+
+        // Cerrar modal con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
     </script>
 </body>
 </html>
