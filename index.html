@@ -199,7 +199,7 @@
             border: 1px solid #bbdefb;
         }
 
-        /* Modal para visualización */
+        /* Modal pantalla completa limpia */
         .modal {
             display: none;
             position: fixed;
@@ -207,142 +207,45 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: #000000;
             z-index: 1000;
             overflow: hidden;
         }
 
         .modal.active {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: block;
         }
 
-        .modal-content {
+        /* Visor de PDF limpio */
+        .pdf-viewer-clean {
             width: 100%;
             height: 100%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-header {
-            background: #2c3e50;
-            color: white;
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-family: 'Georgia', serif;
-        }
-
-        .btn-close {
-            background: transparent;
-            border: 2px solid white;
-            color: white;
-            padding: 8px 20px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            border-radius: 2px;
-            transition: all 0.2s;
-            font-family: 'Georgia', serif;
-        }
-
-        .btn-close:hover {
-            background: white;
-            color: #2c3e50;
-        }
-
-        /* Visor de PDF */
-        .pdf-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #2c3e50;
-            overflow: hidden;
-        }
-
-        .pdf-viewer-custom {
-            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: auto;
-            background: #1a1a2e;
-            padding: 20px;
+            background: #000000;
         }
 
         .pdf-canvas {
             max-width: 100%;
             max-height: 100%;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            object-fit: contain;
         }
 
-        .pdf-controls {
-            background: #34495e;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .pdf-btn {
-            background: white;
-            border: none;
-            padding: 10px 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 2px;
-            transition: all 0.2s;
-            font-family: 'Georgia', serif;
-            color: #2c3e50;
-        }
-
-        .pdf-btn:hover {
-            background: #e8e8e8;
-        }
-
-        .pdf-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .pdf-info {
-            color: white;
-            font-size: 1rem;
-            font-family: 'Georgia', serif;
-        }
-
-        /* Reproductor de audio */
-        .audio-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #1a1a2e;
-        }
-
-        .audio-player-custom {
-            text-align: center;
-            color: white;
-            padding: 40px;
-        }
-
-        .audio-player-custom h3 {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            font-family: 'Georgia', serif;
-        }
-
-        .audio-player-custom audio {
+        /* Reproductor de video limpio */
+        .video-viewer-clean {
             width: 100%;
-            max-width: 600px;
-            margin-top: 20px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000000;
+        }
+
+        .video-viewer-clean video {
+            max-width: 100%;
+            max-height: 100%;
+            outline: none;
         }
 
         @media (max-width: 768px) {
@@ -372,24 +275,6 @@
 
             .btn-tipo {
                 max-width: 100%;
-            }
-
-            .modal-header {
-                padding: 15px 20px;
-            }
-
-            .modal-title {
-                font-size: 1.2rem;
-            }
-
-            .pdf-controls {
-                padding: 10px 15px;
-                gap: 10px;
-            }
-
-            .pdf-btn {
-                padding: 8px 15px;
-                font-size: 0.9rem;
             }
         }
     </style>
@@ -430,35 +315,16 @@
         <div class="status" id="status"></div>
     </div>
 
-    <!-- Modal para visualización -->
+    <!-- Modal pantalla completa limpia -->
     <div class="modal" id="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title" id="modalTitle">Himno</div>
-                <button class="btn-close" onclick="cerrarModal()">Cerrar</button>
-            </div>
+        <!-- Visor PDF -->
+        <div class="pdf-viewer-clean" id="pdfViewer" style="display: none;">
+            <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
+        </div>
 
-            <!-- Visor PDF personalizado -->
-            <div class="pdf-container" id="pdfContainer" style="display: none;">
-                <div class="pdf-viewer-custom">
-                    <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
-                </div>
-                <div class="pdf-controls">
-                    <button class="pdf-btn" id="btnPrev" onclick="paginaAnterior()">← Anterior</button>
-                    <span class="pdf-info">
-                        Página <span id="pageNum">1</span> de <span id="pageCount">1</span>
-                    </span>
-                    <button class="pdf-btn" id="btnNext" onclick="paginaSiguiente()">Siguiente →</button>
-                </div>
-            </div>
-
-            <!-- Reproductor de audio -->
-            <div class="audio-container" id="audioContainer" style="display: none;">
-                <div class="audio-player-custom">
-                    <h3 id="audioTitle">Reproduciendo himno</h3>
-                    <audio id="audioElement" controls autoplay></audio>
-                </div>
-            </div>
+        <!-- Reproductor de video -->
+        <div class="video-viewer-clean" id="videoViewer" style="display: none;">
+            <video id="videoElement" controls></video>
         </div>
     </div>
 
@@ -473,6 +339,7 @@
         let pageRendering = false;
         let pageNumPending = null;
         let scale = 1.5;
+        let modalActivo = false;
         
         const RUTA_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'himnos/'
@@ -517,7 +384,7 @@
             if (extensionActual === 'pdf') {
                 verificarYAbrirPDF(rutaCompleta, nombreArchivo, numeroHimno);
             } else {
-                verificarYAbrirAudio(rutaCompleta, nombreArchivo, numeroHimno);
+                verificarYAbrirVideo(rutaCompleta, nombreArchivo, numeroHimno);
             }
         }
 
@@ -531,7 +398,7 @@
                 .then(response => {
                     if (response.ok) {
                         mostrarEstado('Archivo encontrado. Abriendo...', 'success');
-                        abrirPDFEnModal(ruta, numero);
+                        abrirPDF(ruta);
                     } else {
                         mostrarEstado('No se encontró el archivo: ' + nombre, 'error');
                     }
@@ -542,61 +409,63 @@
                 });
         }
 
-        function verificarYAbrirAudio(ruta, nombre, numero) {
-            const audio = new Audio();
-            audio.src = ruta;
+        function verificarYAbrirVideo(ruta, nombre, numero) {
+            const video = document.createElement('video');
+            video.src = ruta;
             
-            audio.addEventListener('canplay', function() {
+            video.addEventListener('canplay', function() {
                 mostrarEstado('Archivo encontrado. Reproduciendo...', 'success');
-                abrirAudioEnModal(ruta, numero);
+                abrirVideo(ruta);
             }, { once: true });
             
-            audio.addEventListener('error', function() {
+            video.addEventListener('error', function() {
                 mostrarEstado('No se encontró el archivo: ' + nombre, 'error');
             }, { once: true });
         }
 
-        function abrirPDFEnModal(ruta, numero) {
+        function abrirPDF(ruta) {
             const modal = document.getElementById('modal');
-            const pdfContainer = document.getElementById('pdfContainer');
-            const audioContainer = document.getElementById('audioContainer');
-            const modalTitle = document.getElementById('modalTitle');
+            const pdfViewer = document.getElementById('pdfViewer');
+            const videoViewer = document.getElementById('videoViewer');
 
-            audioContainer.style.display = 'none';
-            pdfContainer.style.display = 'flex';
-            modalTitle.textContent = `Himno ${numero} - Letra`;
+            videoViewer.style.display = 'none';
+            pdfViewer.style.display = 'flex';
             modal.classList.add('active');
+            modalActivo = true;
+            pageNum = 1;
 
             cargarPDF(ruta);
         }
 
-        function abrirAudioEnModal(ruta, numero) {
+        function abrirVideo(ruta) {
             const modal = document.getElementById('modal');
-            const pdfContainer = document.getElementById('pdfContainer');
-            const audioContainer = document.getElementById('audioContainer');
-            const audioElement = document.getElementById('audioElement');
-            const audioTitle = document.getElementById('audioTitle');
-            const modalTitle = document.getElementById('modalTitle');
+            const pdfViewer = document.getElementById('pdfViewer');
+            const videoViewer = document.getElementById('videoViewer');
+            const videoElement = document.getElementById('videoElement');
 
-            pdfContainer.style.display = 'none';
-            audioContainer.style.display = 'flex';
-            
-            const tipoTexto = tipoSeleccionado === 'P' ? 'Pista' : 'Cantar';
-            modalTitle.textContent = `Himno ${numero} - ${tipoTexto}`;
-            audioTitle.textContent = `Himno ${numero} - ${tipoTexto}`;
-            
-            audioElement.src = ruta;
-            audioElement.load();
+            pdfViewer.style.display = 'none';
+            videoViewer.style.display = 'flex';
             modal.classList.add('active');
+            modalActivo = true;
+
+            videoElement.src = ruta;
+            videoElement.load();
+            videoElement.play();
+
+            // Cuando termina el video, cerrar automáticamente
+            videoElement.onended = function() {
+                cerrarModal();
+            };
         }
 
         function cerrarModal() {
             const modal = document.getElementById('modal');
-            const audioElement = document.getElementById('audioElement');
+            const videoElement = document.getElementById('videoElement');
             
-            audioElement.pause();
-            audioElement.src = '';
+            videoElement.pause();
+            videoElement.src = '';
             modal.classList.remove('active');
+            modalActivo = false;
             
             if (pdfDoc) {
                 pdfDoc = null;
@@ -609,7 +478,6 @@
             const loadingTask = pdfjsLib.getDocument(url);
             loadingTask.promise.then(function(pdf) {
                 pdfDoc = pdf;
-                document.getElementById('pageCount').textContent = pdf.numPages;
                 renderizarPagina(pageNum);
             });
         }
@@ -620,14 +488,24 @@
             pdfDoc.getPage(num).then(function(page) {
                 const canvas = document.getElementById('pdfCanvas');
                 const ctx = canvas.getContext('2d');
-                const viewport = page.getViewport({scale: scale});
+                
+                // Calcular escala para ajustar a la pantalla
+                const viewport = page.getViewport({scale: 1});
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                
+                const scaleX = windowWidth / viewport.width;
+                const scaleY = windowHeight / viewport.height;
+                const optimalScale = Math.min(scaleX, scaleY) * 0.9;
+                
+                const scaledViewport = page.getViewport({scale: optimalScale});
 
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+                canvas.height = scaledViewport.height;
+                canvas.width = scaledViewport.width;
 
                 const renderContext = {
                     canvasContext: ctx,
-                    viewport: viewport
+                    viewport: scaledViewport
                 };
 
                 const renderTask = page.render(renderContext);
@@ -639,9 +517,6 @@
                     }
                 });
             });
-
-            document.getElementById('pageNum').textContent = num;
-            actualizarBotones();
         }
 
         function queueRenderPage(num) {
@@ -661,16 +536,11 @@
         }
 
         function paginaSiguiente() {
-            if (pageNum >= pdfDoc.numPages) {
+            if (!pdfDoc || pageNum >= pdfDoc.numPages) {
                 return;
             }
             pageNum++;
             queueRenderPage(pageNum);
-        }
-
-        function actualizarBotones() {
-            document.getElementById('btnPrev').disabled = (pageNum <= 1);
-            document.getElementById('btnNext').disabled = (pageNum >= pdfDoc.numPages);
         }
 
         function mostrarEstado(mensaje, tipo) {
@@ -679,10 +549,23 @@
             statusDiv.className = `status ${tipo}`;
         }
 
-        // Cerrar modal con tecla ESC
+        // Controles de teclado
         document.addEventListener('keydown', function(e) {
+            if (!modalActivo) return;
+
             if (e.key === 'Escape') {
                 cerrarModal();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                paginaAnterior();
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                paginaSiguiente();
+            }
+        });
+
+        // Ajustar PDF al cambiar tamaño de ventana
+        window.addEventListener('resize', function() {
+            if (modalActivo && pdfDoc) {
+                renderizarPagina(pageNum);
             }
         });
     </script>
