@@ -12,198 +12,329 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            height: 100vh;
-            background: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            font-family: 'Georgia', 'Times New Roman', serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Fondo sutil con patrón */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px);
+            pointer-events: none;
+            z-index: 1;
         }
 
         .container {
             text-align: center;
             width: 100%;
-            max-width: 800px;
-            padding: 20px;
+            max-width: 900px;
+            background: #ffffff;
+            padding: 50px 40px;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+            border-top: 4px solid #2c3e50;
+        }
+
+        .header {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e8e8e8;
         }
 
         .titulo {
-            color: #c8dce6;
+            color: #2c3e50;
             font-family: 'Georgia', serif;
-            font-size: 4rem;
-            font-weight: bold;
-            margin-bottom: -10px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            font-size: 3rem;
+            font-weight: normal;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
         }
 
         .subtitulo {
-            color: #c8dce6;
+            color: #5a6c7d;
             font-family: 'Georgia', serif;
-            font-size: 3.5rem;
-            font-weight: bold;
-            margin-bottom: 50px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            font-size: 1.4rem;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .search-section {
+            background: #f8f9fa;
+            padding: 35px 30px;
+            border-radius: 2px;
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
         }
 
         .search-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 30px;
         }
 
         #numHimno {
             flex: 1;
             max-width: 400px;
-            padding: 15px 20px;
+            padding: 14px 20px;
             font-size: 1.3rem;
-            background: #e6f0f5;
-            border: 2px solid #6496b4;
-            border-radius: 8px;
+            background: white;
+            border: 2px solid #d0d0d0;
+            border-radius: 2px;
             text-align: center;
-            color: #14282a;
+            color: #2c3e50;
             outline: none;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            font-family: 'Georgia', serif;
         }
 
         #numHimno:focus {
-            border-color: #5a82a0;
-            box-shadow: 0 0 10px rgba(100, 150, 180, 0.5);
+            border-color: #2c3e50;
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+        }
+
+        #numHimno::placeholder {
+            color: #a0a0a0;
+            font-style: italic;
         }
 
         .btn-buscar {
             width: 60px;
-            height: 60px;
-            background: #46829c;
+            height: 52px;
+            background: #2c3e50;
             border: none;
-            border-radius: 8px;
+            border-radius: 2px;
             color: white;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .btn-buscar:hover {
-            background: #5a96b4;
-            transform: scale(1.05);
+            background: #34495e;
+        }
+
+        .btn-buscar:active {
+            transform: scale(0.98);
         }
 
         .tipo-container {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 40px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .btn-tipo {
             flex: 1;
-            max-width: 130px;
-            padding: 12px 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            background: #325064;
-            color: #b4c8d2;
-            border: none;
-            border-radius: 8px;
+            min-width: 120px;
+            max-width: 150px;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: normal;
+            background: white;
+            color: #2c3e50;
+            border: 2px solid #d0d0d0;
+            border-radius: 2px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            font-family: 'Georgia', serif;
         }
 
         .btn-tipo:hover {
-            background: #3d6078;
+            background: #f8f9fa;
+            border-color: #2c3e50;
         }
 
         .btn-tipo.activo {
-            background: #46829c;
+            background: #2c3e50;
             color: white;
-            box-shadow: 0 0 15px rgba(70, 130, 156, 0.6);
+            border-color: #2c3e50;
         }
 
         .status {
-            color: #64c8ff;
-            font-size: 1.1rem;
-            min-height: 30px;
+            color: #5a6c7d;
+            font-size: 1rem;
+            min-height: 40px;
             margin-top: 20px;
-            transition: all 0.3s;
+            padding: 12px 20px;
+            border-radius: 2px;
+            transition: all 0.2s;
+            font-family: 'Georgia', serif;
         }
 
         .status.success {
-            color: #64ff96;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
         }
 
         .status.error {
-            color: #ff6464;
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
         }
 
-        .audio-player {
+        .status.loading {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #bbdefb;
+        }
+
+        .content-viewer {
             margin-top: 30px;
             display: none;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 2px;
+            border: 1px solid #e0e0e0;
         }
 
-        audio {
+        .audio-player audio {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             outline: none;
         }
 
-        /* Notación musical decorativa */
-        .musical-notes {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .pdf-viewer {
             width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            pointer-events: none;
-            font-size: 3rem;
-            color: #c8dce6;
+            height: 600px;
+            border: 1px solid #d0d0d0;
+            border-radius: 2px;
+            background: white;
+        }
+
+        .label {
+            display: inline-block;
+            margin-right: 6px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .titulo {
+                font-size: 2.2rem;
+            }
+
+            .subtitulo {
+                font-size: 1.2rem;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            #numHimno {
+                max-width: 100%;
+            }
+
+            .tipo-container {
+                flex-direction: column;
+            }
+
+            .btn-tipo {
+                max-width: 100%;
+            }
+
+            .pdf-viewer {
+                height: 400px;
+            }
+        }
+
+        /* Estilo minimalista para el scroll */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
     </style>
 </head>
-<body>    
+<body>
     <div class="container">
-        <h1 class="titulo">Himnario Adventista</h1>
-        <h2 class="subtitulo">Iglesia Mutualismo</h2>
-        <div class="search-container">
-            <input 
-                type="number" 
-                id="numHimno" 
-                placeholder="Número del himno" 
-                min="1"
-                autofocus
-            >
-            <button class="btn-buscar" onclick="buscarHimno()">▶</button>
+        <div class="header">
+            <h1 class="titulo">Himnario Adventista</h1>
+            <h2 class="subtitulo">Iglesia Mutualismo</h2>
         </div>
 
-        <div class="tipo-container">
-            <button class="btn-tipo activo" data-tipo="L" onclick="seleccionarTipo(this)">
-                Letra
-            </button>
-            <button class="btn-tipo" data-tipo="P" onclick="seleccionarTipo(this)">
-                Pista
-            </button>
-            <button class="btn-tipo" data-tipo="C" onclick="seleccionarTipo(this)">
-                Cantar
-            </button>
+        <div class="search-section">
+            <div class="search-container">
+                <input 
+                    type="number" 
+                    id="numHimno" 
+                    placeholder="Número del himno" 
+                    min="1"
+                    max="999"
+                    autofocus
+                >
+                <button class="btn-buscar" onclick="buscarHimno()" title="Buscar">▶</button>
+            </div>
+
+            <div class="tipo-container">
+                <button class="btn-tipo activo" data-tipo="L" data-ext="pdf" onclick="seleccionarTipo(this)">
+                    Letra
+                </button>
+                <button class="btn-tipo" data-tipo="P" data-ext="mp3" onclick="seleccionarTipo(this)">
+                    Pista
+                </button>
+                <button class="btn-tipo" data-tipo="C" data-ext="mp3" onclick="seleccionarTipo(this)">
+                    Cantar
+                </button>
+            </div>
         </div>
 
         <div class="status" id="status"></div>
 
-        <div class="audio-player" id="audioPlayer">
+        <div class="content-viewer audio-player" id="audioPlayer">
             <audio id="audioElement" controls></audio>
+        </div>
+
+        <div class="content-viewer" id="pdfViewer">
+            <iframe id="pdfFrame" class="pdf-viewer"></iframe>
         </div>
     </div>
 
     <script>
-        let tipoSeleccionado = 'L'; // Por defecto Letra
-        const RUTA_CARPETA = 'himnos/'; // Ajusta según tu estructura
+        let tipoSeleccionado = 'L';
+        let extensionActual = 'pdf';
+        
+        // Ruta corregida para GitHub Pages
+        const RUTA_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'himnos/'
+            : '/Himnario-IASDMutualismo/himnos/';
 
-        // Manejar Enter en el input
         document.getElementById('numHimno').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 buscarHimno();
@@ -211,65 +342,101 @@
         });
 
         function seleccionarTipo(btn) {
-            // Remover clase activo de todos
             document.querySelectorAll('.btn-tipo').forEach(b => {
                 b.classList.remove('activo');
             });
             
-            // Agregar clase activo al seleccionado
             btn.classList.add('activo');
             tipoSeleccionado = btn.getAttribute('data-tipo');
+            extensionActual = btn.getAttribute('data-ext');
+            
+            // Ocultar todos los visores
+            document.getElementById('audioPlayer').style.display = 'none';
+            document.getElementById('pdfViewer').style.display = 'none';
         }
 
         function buscarHimno() {
             const numeroHimno = document.getElementById('numHimno').value.trim();
             const statusDiv = document.getElementById('status');
             const audioPlayer = document.getElementById('audioPlayer');
+            const pdfViewer = document.getElementById('pdfViewer');
             const audioElement = document.getElementById('audioElement');
+            const pdfFrame = document.getElementById('pdfFrame');
 
             // Limpiar estado previo
             statusDiv.className = 'status';
             audioPlayer.style.display = 'none';
+            pdfViewer.style.display = 'none';
+            audioElement.pause();
+            audioElement.src = '';
+            pdfFrame.src = '';
 
             if (!numeroHimno) {
-                mostrarEstado('Por favor ingresa un número de himno', 'error');
+                mostrarEstado('Por favor ingrese un número de himno', 'error');
                 return;
             }
 
-            // Construir nombre del archivo
-            const nombreArchivo = construirNombreArchivo(numeroHimno, tipoSeleccionado);
-            const rutaCompleta = RUTA_CARPETA + nombreArchivo;
+            const nombreArchivo = construirNombreArchivo(numeroHimno, tipoSeleccionado, extensionActual);
+            const rutaCompleta = RUTA_BASE + nombreArchivo;
 
-            // Intentar cargar el archivo
-            verificarYReproducir(rutaCompleta, nombreArchivo);
-        }
-
-        function construirNombreArchivo(numero, tipo) {
-            // Formatear número con ceros a la izquierda (001, 002, etc.)
-            const numeroFormateado = numero.padStart(3, '0');
+            console.log('Buscando archivo en:', rutaCompleta);
             
-            // Formato: himno_001_L.mp3
-            // Ajusta la extensión según tus archivos (.mp3, .wav, .ogg, etc.)
-            return `himno_${numeroFormateado}_${tipo}.mp3`;
+            if (extensionActual === 'pdf') {
+                cargarPDF(rutaCompleta, nombreArchivo);
+            } else {
+                cargarAudio(rutaCompleta, nombreArchivo);
+            }
         }
 
-        function verificarYReproducir(ruta, nombre) {
+        function construirNombreArchivo(numero, tipo, extension) {
+            const numeroFormateado = numero.padStart(3, '0');
+            return `himno_${numeroFormateado}_${tipo}.${extension}`;
+        }
+
+        function cargarPDF(ruta, nombre) {
+            const pdfViewer = document.getElementById('pdfViewer');
+            const pdfFrame = document.getElementById('pdfFrame');
+            
+            mostrarEstado('Cargando documento...', 'loading');
+            
+            // Verificar si el PDF existe
+            fetch(ruta, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        pdfFrame.src = ruta;
+                        pdfViewer.style.display = 'block';
+                        mostrarEstado('Documento cargado correctamente: ' + nombre, 'success');
+                    } else {
+                        mostrarEstado('No se encontró el archivo: ' + nombre, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    mostrarEstado('Error al cargar el documento: ' + nombre, 'error');
+                });
+        }
+
+        function cargarAudio(ruta, nombre) {
             const audioElement = document.getElementById('audioElement');
             const audioPlayer = document.getElementById('audioPlayer');
             
-            audioElement.src = ruta;
+            mostrarEstado('Cargando audio...', 'loading');
             
-            // Intentar cargar el archivo
+            audioElement.src = ruta;
             audioElement.load();
             
             audioElement.oncanplay = function() {
-                mostrarEstado(`✓ Archivo encontrado: ${nombre}`, 'success');
+                mostrarEstado('Audio cargado correctamente: ' + nombre, 'success');
                 audioPlayer.style.display = 'block';
-                audioElement.play();
+                audioElement.play().catch(err => {
+                    console.error('Error al reproducir:', err);
+                    mostrarEstado('Audio listo para reproducir', 'success');
+                });
             };
             
             audioElement.onerror = function() {
-                mostrarEstado(`✗ No se encontró el archivo: ${nombre}`, 'error');
+                console.error('Error al cargar:', ruta);
+                mostrarEstado('No se encontró el archivo: ' + nombre, 'error');
                 audioPlayer.style.display = 'none';
             };
         }
