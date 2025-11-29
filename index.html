@@ -290,15 +290,48 @@
             position: relative;
         }
 
+        .pdf-canvas-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .pdf-canvas {
+            position: absolute;
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            opacity: 1;
         }
 
-        .pdf-canvas.changing {
+        .pdf-canvas.fade-out {
             opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .pdf-canvas.fade-in {
+            opacity: 0;
+            transform: scale(1.05);
+        }
+
+        .pdf-canvas.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Canvas de carga inicial */
+        #pdfCanvasTemp {
+            position: absolute;
+            z-index: 1;
+        }
+
+        #pdfCanvas {
+            position: absolute;
+            z-index: 2;
         }
 
         /* Controles minimalistas solo para PDF */
@@ -451,7 +484,10 @@
     <div class="modal" id="modal">
         <!-- Visor PDF -->
         <div class="pdf-viewer-clean" id="pdfViewer" style="display: none;">
-            <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
+            <div class="pdf-canvas-container">
+                <canvas id="pdfCanvasTemp" class="pdf-canvas"></canvas>
+                <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
+            </div>
             
             <!-- Controles minimalistas -->
             <div class="pdf-controls-minimal" id="pdfControls">
@@ -573,9 +609,15 @@
             const modal = document.getElementById('modal');
             const pdfViewer = document.getElementById('pdfViewer');
             const videoViewer = document.getElementById('videoViewer');
+            const canvasActual = document.getElementById('pdfCanvas');
 
             videoViewer.style.display = 'none';
             pdfViewer.style.display = 'flex';
+            
+            // Iniciar con el canvas invisible para la primera carga
+            canvasActual.classList.remove('visible', 'fade-in', 'fade-out');
+            canvasActual.classList.add('fade-in');
+            
             modal.classList.add('active');
             modalActivo = true;
             pageNum = 1;
@@ -677,12 +719,16 @@
         }
 
         function renderizarPagina(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+                return;
+            }
+            
             pageRendering = true;
-            const canvas = document.getElementById('pdfCanvas');
+            const canvasActual = document.getElementById('pdfCanvas');
+            const canvasTemp = document.getElementById('pdfCanvasTemp');
             
             pdfDoc.getPage(num).then(function(page) {
-                const ctx = canvas.getContext('2d');
-                
                 // Calcular escala para llenar toda la pantalla
                 const viewport = page.getViewport({scale: 1});
                 const windowWidth = window.innerWidth;
@@ -694,55 +740,87 @@
                 
                 const scaledViewport = page.getViewport({scale: optimalScale});
 
-                canvas.height = scaledViewport.height;
-                canvas.width = scaledViewport.width;
-
-                // Si la página está en caché, cargarla primero
+                // Si hay imagen en caché, mostrarla inmediatamente en canvas temporal
                 if (pageCache[num]) {
                     const img = new Image();
                     img.onload = function() {
-                        canvas.classList.add('changing');
+                        canvasTemp.height = scaledViewport.height;
+                        canvasTemp.width = scaledViewport.width;
+                        const tempCtx = canvasTemp.getContext('2d');
+                        tempCtx.drawImage(img, 0, 0, scaledViewport.width, scaledViewport.height);
+                        
+                        // Fade out del canvas actual
+                        canvasActual.classList.add('fade-out');
+                        
+                        // Después de que termine el fade out, intercambiar canvas
                         setTimeout(() => {
-                            ctx.drawImage(img, 0, 0);
-                            canvas.classList.remove('changing');
-                        }, 100);
+                            canvasActual.height = scaledViewport.height;
+                            canvasActual.width = scaledViewport.width;
+                            const ctx = canvasActual.getContext('2d');
+                            ctx.drawImage(img, 0, 0, scaledViewport.width, scaledViewport.height);
+                            
+                            // Fade in del nuevo contenido
+                            canvasActual.classList.remove('fade-out');
+                            canvasActual.classList.add('fade-in');
+                            
+                            setTimeout(() => {
+                                canvasActual.classList.remove('fade-in');
+                                canvasActual.classList.add('visible');
+                                
+                                // Limpiar canvas temporal
+                                tempCtx.clearRect(0, 0, canvasTemp.width, canvasTemp.height);
+                                
+                                pageRendering = false;
+                                if (pageNumPending !== null) {
+                                    const pending = pageNumPending;
+                                    pageNumPending = null;
+                                    renderizarPagina(pending);
+                                }
+                                actualizarBotones();
+                                precargarPaginas();
+                            }, 50);
+                        }, 600);
                     };
                     img.src = pageCache[num];
-                }
-
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: scaledViewport
-                };
-
-                // Añadir efecto de transición solo si no está en caché
-                if (!pageCache[num]) {
-                    canvas.classList.add('changing');
-                }
-
-                const renderTask = page.render(renderContext);
-                renderTask.promise.then(function() {
-                    pageRendering = false;
+                } else {
+                    // No hay caché, renderizar directamente con transición
+                    canvasActual.classList.add('fade-out');
                     
-                    // Guardar en caché si no existe
-                    if (!pageCache[num]) {
-                        pageCache[num] = canvas.toDataURL();
-                    }
-                    
-                    // Quitar efecto de transición
                     setTimeout(() => {
-                        canvas.classList.remove('changing');
-                    }, 100);
-                    
-                    if (pageNumPending !== null) {
-                        renderizarPagina(pageNumPending);
-                        pageNumPending = null;
-                    }
-                    actualizarBotones();
-                    
-                    // Precargar páginas cercanas después de renderizar
-                    precargarPaginas();
-                });
+                        canvasActual.height = scaledViewport.height;
+                        canvasActual.width = scaledViewport.width;
+                        const ctx = canvasActual.getContext('2d');
+
+                        const renderContext = {
+                            canvasContext: ctx,
+                            viewport: scaledViewport
+                        };
+
+                        const renderTask = page.render(renderContext);
+                        renderTask.promise.then(function() {
+                            // Guardar en caché
+                            pageCache[num] = canvasActual.toDataURL();
+                            
+                            // Fade in
+                            canvasActual.classList.remove('fade-out');
+                            canvasActual.classList.add('fade-in');
+                            
+                            setTimeout(() => {
+                                canvasActual.classList.remove('fade-in');
+                                canvasActual.classList.add('visible');
+                                
+                                pageRendering = false;
+                                if (pageNumPending !== null) {
+                                    const pending = pageNumPending;
+                                    pageNumPending = null;
+                                    renderizarPagina(pending);
+                                }
+                                actualizarBotones();
+                                precargarPaginas();
+                            }, 50);
+                        });
+                    }, 600);
+                }
             });
         }
 
