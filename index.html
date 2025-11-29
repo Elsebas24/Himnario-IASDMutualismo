@@ -485,6 +485,7 @@
         let pageNumPending = null;
         let scale = 1.5;
         let modalActivo = false;
+        let pageCache = {}; // Caché para páginas renderizadas
         
         const RUTA_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'himnos/'
@@ -615,24 +616,69 @@
             if (pdfDoc) {
                 pdfDoc = null;
                 pageNum = 1;
+                pageCache = {}; // Limpiar caché al cerrar
             }
         }
 
         // Funciones para manejar PDF
         function cargarPDF(url) {
+            pageCache = {}; // Limpiar caché al cargar nuevo PDF
             const loadingTask = pdfjsLib.getDocument(url);
             loadingTask.promise.then(function(pdf) {
                 pdfDoc = pdf;
                 renderizarPagina(pageNum);
+                // Precargar las siguientes 3 páginas
+                precargarPaginas();
+            });
+        }
+
+        function precargarPaginas() {
+            if (!pdfDoc) return;
+            
+            // Precargar página siguiente, la de después y la anterior
+            const paginasAPrecargar = [pageNum + 1, pageNum + 2, pageNum - 1];
+            
+            paginasAPrecargar.forEach(num => {
+                if (num >= 1 && num <= pdfDoc.numPages && !pageCache[num]) {
+                    renderizarPaginaEnCache(num);
+                }
+            });
+        }
+
+        function renderizarPaginaEnCache(num) {
+            pdfDoc.getPage(num).then(function(page) {
+                // Crear un canvas temporal para el caché
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                const viewport = page.getViewport({scale: 1});
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                
+                const scaleX = windowWidth / viewport.width;
+                const scaleY = windowHeight / viewport.height;
+                const optimalScale = Math.max(scaleX, scaleY);
+                
+                const scaledViewport = page.getViewport({scale: optimalScale});
+                
+                tempCanvas.height = scaledViewport.height;
+                tempCanvas.width = scaledViewport.width;
+                
+                const renderContext = {
+                    canvasContext: tempCtx,
+                    viewport: scaledViewport
+                };
+                
+                page.render(renderContext).promise.then(function() {
+                    // Guardar imagen en caché
+                    pageCache[num] = tempCanvas.toDataURL();
+                });
             });
         }
 
         function renderizarPagina(num) {
             pageRendering = true;
             const canvas = document.getElementById('pdfCanvas');
-            
-            // Añadir efecto de transición
-            canvas.classList.add('changing');
             
             pdfDoc.getPage(num).then(function(page) {
                 const ctx = canvas.getContext('2d');
@@ -644,31 +690,58 @@
                 
                 const scaleX = windowWidth / viewport.width;
                 const scaleY = windowHeight / viewport.height;
-                const optimalScale = Math.max(scaleX, scaleY); // Usar max en lugar de min para llenar
+                const optimalScale = Math.max(scaleX, scaleY);
                 
                 const scaledViewport = page.getViewport({scale: optimalScale});
 
                 canvas.height = scaledViewport.height;
                 canvas.width = scaledViewport.width;
 
+                // Si la página está en caché, cargarla primero
+                if (pageCache[num]) {
+                    const img = new Image();
+                    img.onload = function() {
+                        canvas.classList.add('changing');
+                        setTimeout(() => {
+                            ctx.drawImage(img, 0, 0);
+                            canvas.classList.remove('changing');
+                        }, 100);
+                    };
+                    img.src = pageCache[num];
+                }
+
                 const renderContext = {
                     canvasContext: ctx,
                     viewport: scaledViewport
                 };
 
+                // Añadir efecto de transición solo si no está en caché
+                if (!pageCache[num]) {
+                    canvas.classList.add('changing');
+                }
+
                 const renderTask = page.render(renderContext);
                 renderTask.promise.then(function() {
                     pageRendering = false;
+                    
+                    // Guardar en caché si no existe
+                    if (!pageCache[num]) {
+                        pageCache[num] = canvas.toDataURL();
+                    }
+                    
                     // Quitar efecto de transición
                     setTimeout(() => {
                         canvas.classList.remove('changing');
-                    }, 50);
+                    }, 100);
                     
                     if (pageNumPending !== null) {
                         renderizarPagina(pageNumPending);
                         pageNumPending = null;
                     }
                     actualizarBotones();
+                    
+                    // Precargar páginas cercanas después de renderizar
+                    precargarPaginas();
                 });
             });
         }
@@ -724,6 +797,7 @@
         // Ajustar PDF al cambiar tamaño de ventana
         window.addEventListener('resize', function() {
             if (modalActivo && pdfDoc) {
+                pageCache = {}; // Limpiar caché al cambiar tamaño
                 renderizarPagina(pageNum);
             }
         });
