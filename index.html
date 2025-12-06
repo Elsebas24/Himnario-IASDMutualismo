@@ -39,6 +39,47 @@
             animation: gradientMove 15s ease infinite;
         }
 
+        /* Imágenes decorativas */
+        .decorative-image {
+            position: fixed;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .decorative-image.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            max-width: 200px;
+            max-height: 200px;
+        }
+
+        .decorative-image.top-right {
+            top: 20px;
+            right: 20px;
+            max-width: 200px;
+            max-height: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .decorative-image.bottom-left,
+            .decorative-image.top-right {
+                max-width: 120px;
+                max-height: 120px;
+            }
+            
+            .decorative-image.bottom-left {
+                bottom: 10px;
+                left: 10px;
+            }
+            
+            .decorative-image.top-right {
+                top: 10px;
+                right: 10px;
+            }
+        }
+
         @keyframes gradientMove {
             0%, 100% { opacity: 0.5; }
             50% { opacity: 0.8; }
@@ -444,11 +485,13 @@
     <div class="musical-note">♪</div>
     <div class="musical-note">♫</div>
     <div class="musical-note">♪</div>
-
+    
+    <img src="../Himnario-IASDMutualismo/recursos/LogoIASDMutualismo.png" alt="Logo Mutualismo" class="decorative-image bottom-left" id="imagenInferiorIzq">
+    <img src="../Himnario-IASDMutualismo/recursos/LogoIASD.png" alt="Logo IASD" class="decorative-image top-right" id="imagenSuperiorDer">
+    
     <div class="container">
         <div class="header">
             <h1 class="titulo">Himnario Adventista</h1>
-            <h2 class="subtitulo">Iglesia Mutualismo</h2>
         </div>
 
         <div class="search-section">
